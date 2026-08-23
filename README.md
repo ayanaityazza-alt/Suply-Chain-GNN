@@ -1,26 +1,117 @@
 
----
+# Hybrid GNN for Supply Chain Demand Forecasting
 
-```
-# NEXUS Control Tower – Supply Chain GNN
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
+[![PyTorch Geometric](https://img.shields.io/badge/PyG-2.3+-green.svg)](https://pytorch-geometric.readthedocs.io/)
+[![Dataset: SCG](https://img.shields.io/badge/Dataset-SCG-important.svg)](https://doi.org/10.5281/zenodo.13652826)
 
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**A Multi-Relational Graph Neural Network for supply chain demand forecasting with an interactive Control Tower dashboard.**
 
-**Multi-Relational GNN (RGCN) for supply chain demand forecasting with an interactive dashboard.**  
-Achieves **R² = 0.7364** on the SCG dataset.
+Achieves **R² = 0.7364** on the SCG benchmark dataset.
 
 ---
 
 ## 📖 Overview
 
-Products in a supply chain are connected: they share warehouses, plants, and product categories. Our RGCN model captures these relationships using **4 edge types** (Storage, Plant, Group, SubGroup) and an **ensemble of 5 models**.
+Products in a supply chain are connected. They share warehouses, production plants, and product categories. Our model captures these relationships using an **RGCN with 4 edge types** and an **ensemble of 5 models**, outperforming standard GNN architectures.
 
 The **NEXUS Control Tower** dashboard provides:
-- 📊 Real-time KPIs (Total Demand, Confidence, Products at Risk)
-- 🧠 Explainability (why a prediction was made)
-- ⚙️ What-If Simulator (test production changes)
-- 🎯 Recommender Engine (Top 3 actions)
+- Real-time KPIs (Total Demand, Confidence, Products at Risk)
+- Explainability (why a prediction was made)
+- What-If Simulator (test production changes)
+- Recommender Engine (Top 3 actions)
+
+---
+
+## 📊 Results
+
+| Model | R² |
+| :--- | :---: |
+| Hybrid GNN (GATv2 + Transformer) | 0.6403 |
+| RGCN (Single Seed) | 0.7200 |
+| **RGCN Ensemble(The model implemented in DashBoard.py)** | **0.7364** |
+
+---
+
+## 📂 Data Pipeline
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  221 days × 40 products × 4 features                           │
+│  (Production, Factory Issue, Delivery, Sales Order)            │
+│                                                                 │
+│  ▼                                                              │
+│  Remove 12 dead products (>80% zero sales)                     │
+│                                                                 │
+│  ▼                                                              │
+│  221 days × 28 active products × 4 features                    │
+│                                                                 │
+│  ▼                                                              │
+│  Feature Engineering (27 features/day):                        │
+│  └─ Rolling stats (mean + std over 7 days)                     │
+│  └─ Lags (day -7 and day -14)                                  │
+│  └─ Day-of-week encoding (7 one-hot features)                  │
+│                                                                 │
+│  ▼                                                              │
+│  14-day sliding window                                         │
+│                                                                 │
+│  ▼                                                              │
+│  213 samples × 28 products × 378 input channels                │
+│                                                                 │
+│  ▼                                                              │
+│  Temporal split: 80% train / 20% test (no shuffling)          │
+│                                                                 │
+│  ▼                                                              │
+│  Train: 170 snapshots  |  Test: 43 snapshots                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Dataset source:** SCG dataset (Wasi et al., 2024)  
+👉 [https://doi.org/10.5281/zenodo.13652826](https://doi.org/10.5281/zenodo.13652826)
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  Input: 28 products × 378 features (14 days × 27 features)    │
+│                                                                 │
+│  ▼                                                              │
+│  [Input Projection] Linear(378 → 256)                          │
+│                                                                 │
+│  ┌─────────────────────┐    ┌─────────────────────────────┐   │
+│  │   RGCN Layer 1      │    │   RGCN Layer 1              │   │
+│  │   (5 relations)     │    │   (5 relations)             │   │
+│  └─────────────────────┘    └─────────────────────────────┘   │
+│  │                           │                                  │
+│  ▼                           ▼                                  │
+│  [LayerNorm + Dropout]      [LayerNorm + Dropout]              │
+│  │                           │                                  │
+│  ▼                           ▼                                  │
+│  ┌─────────────────────┐    ┌─────────────────────────────┐   │
+│  │   RGCN Layer 2      │    │   RGCN Layer 2              │   │
+│  │   (5 relations)     │    │   (5 relations)             │   │
+│  └─────────────────────┘    └─────────────────────────────┘   │
+│  │                           │                                  │
+│  ▼                           ▼                                  │
+│  [LayerNorm + Dropout]      [LayerNorm + Dropout]              │
+│  │                           │                                  │
+│  └─────────────┬─────────────┘                                  │
+│                ▼                                                │
+│  [Output MLP] Linear(256 → 64 → 1)                            │
+│                                                                 │
+│  ▼                                                              │
+│  Prediction: Demand for each product                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+5-model ensemble with seeds: 42, 123, 456, 789, 1011
+```
 
 ---
 
@@ -30,18 +121,20 @@ The SCG dataset is **publicly available** on Zenodo:
 👉 [https://doi.org/10.5281/zenodo.13652826](https://doi.org/10.5281/zenodo.13652826)
 
 **1. Download** the dataset from the link above.  
-**2. Create** a folder called `trade_data` in this repository.  
-**3. Place** these 9 CSV files inside `trade_data/`:
+**2. Place** these 9 CSV files inside `trade_data/`:
 
-- `NodesIndex.csv`
-- `Edges (Storage Location).csv`
-- `Edges (Plant).csv`
-- `Edges (Product Group).csv`
-- `Edges (Product Sub-Group).csv`
-- `Sales Order.csv`
-- `Production.csv`
-- `Factory Issue.csv`
-- `Delivery To distributor.csv`
+```
+trade_data/
+├── NodesIndex.csv
+├── Edges (Storage Location).csv
+├── Edges (Plant).csv
+├── Edges (Product Group).csv
+├── Edges (Product Sub-Group).csv
+├── Sales Order.csv
+├── Production.csv
+├── Factory Issue.csv
+└── Delivery To distributor.csv
+```
 
 ---
 
@@ -52,13 +145,20 @@ The SCG dataset is **publicly available** on Zenodo:
 git clone https://github.com/ayanaityazza-alt/Supply-Chain-GNN.git
 cd Supply-Chain-GNN
 
-# 2. Install dependencies
+# 2. Create virtual environment (recommended)
+python -m venv .venv
+# On Windows:
+.venv\Scripts\activate
+# On Mac/Linux:
+source .venv/bin/activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run the dashboard
+# 4. Run the dashboard
 python DashBoard.py
 
-# 4. Open browser
+# 5. Open browser
 http://127.0.0.1:8000
 ```
 
@@ -72,16 +172,6 @@ http://127.0.0.1:8000
 
 ---
 
-## 📊 Results
-
-| Model | R² |
-| :--- | :---: |
-| Hybrid GNN | 0.6403 |
-| RGCN (Single) | 0.7200 |
-| **RGCN Ensemble** | **0.7364** |
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -89,6 +179,7 @@ Supply-Chain-GNN/
 ├── DashBoard.py        # Main application
 ├── requirements.txt    # Dependencies
 ├── README.md           # This file
+├── LICENSE   
 └── trade_data/         # Place CSV files here (empty folder)
 ```
 
@@ -99,34 +190,24 @@ Supply-Chain-GNN/
 ```bibtex
 @article{wasi2026nexus,
   title={A Visual Analytics Framework for Supply Chain Demand Forecasting Using Multi-Relational Graph Neural Networks},
-  author={Wasi, Azmine Toushik and [Supervisor Name]},
+  author={Aya Nait Yazza, Ahmad Faiz Ghazali},
   journal={Malaysian Journal of Computing},
   year={2026}
 }
 ```
 
-**Dataset**: Wasi et al., *Graph Neural Networks in Supply Chain Analytics*, arXiv:2411.08550, 2024.
+**Dataset**:
+```bibtex
+@article{wasi2024graph,
+  title={Graph Neural Networks in Supply Chain Analytics and Optimization: Concepts, Perspectives, Dataset and Benchmarks},
+  author={Wasi, Azmine Toushik and Islam, MD Shafikul and Akib, Adipto Raihan and Bappy, Mahathir Mohammad},
+  journal={arXiv preprint arXiv:2411.08550},
+  year={2024}
+}
+```
 
 ---
 
 ## 📄 License
 
 MIT License. See the [LICENSE](LICENSE) file.
-
----
-
-**Questions?** Open an issue or contact the corresponding author.
-```
-
----
-
-## ✅ Instructions
-
-1. **Copy** the entire code block above.
-2. **Open** your `README.md` file in VS Code.
-3. **Delete** everything currently in it.
-4. **Paste** the new content.
-5. **Save** the file (`Ctrl + S`).
-6. **View** on GitHub or use `Ctrl + Shift + V` in VS Code to see the preview.
-
-Your table and everything else will display **perfectly** now. 🚀
