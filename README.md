@@ -43,7 +43,7 @@ The SCG dataset is **publicly available** on Zenodo:
 ## ▶️ Quick Start (Run the Dashboard)
 
 ```bash
-# 1. Clone (using your username)
+# 1. Clone
 git clone https://github.com/ayanaityazza-alt/Supply-Chain-GNN.git
 cd Supply-Chain-GNN
 
@@ -56,21 +56,23 @@ python DashBoard.py
 # 4. Open browser
 http://127.0.0.1:8000
 ---
+## 📊 Results
 
-📊 Results
-Model	R²
-Hybrid GNN	0.6403
-RGCN (Single)	0.7200
-RGCN Ensemble	0.7364
+| Model | R² |
+| :--- | :---: |
+| Hybrid GNN | 0.6403 |
+| RGCN (Single) | 0.7200 |
+| **RGCN Ensemble** | **0.7364** |
 
-📁 Project Structure
+## 📁 Project Structure
+
 Supply-Chain-GNN/
 ├── DashBoard.py        # Main application
 ├── requirements.txt    # Dependencies
 ├── README.md           # This file
 └── trade_data/         # ⚠️ Place CSV files here (empty folder)
 
-📝 Citation
+##📝 Citation
 @article{wasi2026nexus,
   title={A Visual Analytics Framework for Supply Chain Demand Forecasting Using Multi-Relational Graph Neural Networks},
   author={Wasi, Azmine Toushik and [Supervisor Name]},
@@ -78,5 +80,5 @@ Supply-Chain-GNN/
   year={2026}
 }
 
-License
+## License
 MIT License. See the LICENSE file.
