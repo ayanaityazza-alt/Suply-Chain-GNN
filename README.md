@@ -179,7 +179,7 @@ Supply-Chain-GNN/
 ├── DashBoard.py        # Main application
 ├── requirements.txt    # Dependencies
 ├── README.md           # This file
-├── LICENSE   
+├── LICENSE             # MIT License text
 └── trade_data/         # Place CSV files here (empty folder)
 ```
 
@@ -188,7 +188,7 @@ Supply-Chain-GNN/
 ## 📝 Citation
 
 ```bibtex
-@article{wasi2026nexus,
+@article{nexus_gnn_2026,
   title={A Visual Analytics Framework for Supply Chain Demand Forecasting Using Multi-Relational Graph Neural Networks},
   author={Aya Nait Yazza, Ahmad Faiz Ghazali},
   journal={Malaysian Journal of Computing},
