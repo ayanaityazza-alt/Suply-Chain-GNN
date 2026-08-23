@@ -1,47 +1,58 @@
-# Suply-Chain-GNN
-# NEXUS Control Tower – Supply Chain Demand Forecasting
+# NEXUS Control Tower – Supply Chain GNN
 
-**Multi-Relational Graph Neural Network (RGCN) for end-to-end supply chain demand forecasting with an interactive decision-support dashboard.**
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This repository contains the official implementation for the paper:  
-*"A Visual Analytics Framework for Supply Chain Demand Forecasting Using Multi-Relational Graph Neural Networks"*.
-
----
-
-## 🚀 Overview
-
-Supply chain products are highly interconnected. They share warehouses, production plants, and product categories. Traditional forecasting treats products independently and misses these dependencies.
-
-We build a **Multi-Relational Graph Convolutional Network (RGCN)** to capture these relationships. The model uses 4 edge types (Storage, Plant, Product Group, Sub-Group) and an ensemble of 5 models to achieve **R² = 0.7364** on the SCG benchmark dataset.
-
-The system is wrapped in the **NEXUS Control Tower** – a professional interactive dashboard that empowers managers with:
-
-- 📈 **Real-time KPIs**: Total Demand, Average Confidence, Products at Risk, Total Inventory.
-- 🧠 **Explainability (XAI)**: Visual breakdown of why a prediction was made (Production, Factory Issue, Delivery, Sales History).
-- ⚙️ **What-If Simulator**: Adjust production volumes and instantly see the cascading effect across all 28 products.
-- 🎯 **Intelligent Recommender**: Get Top-3 actionable actions (Top Seller Boost, Growth Capturer, Risk Mitigator).
-- 📊 **Network View**: Click on any product tag to analyze its specific demand profile.
+**Multi-Relational GNN (RGCN) for supply chain demand forecasting with an interactive dashboard.**  
+Achieves **R² = 0.7364** on the SCG dataset.
 
 ---
 
-## 🏗️ Architecture
+## 📖 Overview
 
-| Component | Specification |
-| :--- | :--- |
-| **Model** | Relational Graph Convolutional Network (RGCN) |
-| **Graph Nodes** | 28 Active Products |
-| **Edge Types** | 4 (Storage Location, Plant, Product Group, Product Sub-Group) + Self-loops |
-| **Input Features** | 27 engineered features/day (Rolling stats, Lags, Day-of-week) |
-| **Temporal Window** | 14 days (378 input channels per product) |
-| **Hidden Units** | 256 |
-| **Ensemble** | 5 random seeds (42, 123, 456, 789, 1011) |
-| **Best R²** | **0.7364** |
+Products in a supply chain are connected: they share warehouses, plants, and product categories. Our RGCN model captures these relationships using **4 edge types** (Storage, Plant, Group, SubGroup) and an **ensemble of 5 models**.
+
+The **NEXUS Control Tower** dashboard provides:
+- 📊 Real-time KPIs (Total Demand, Confidence, Products at Risk)
+- 🧠 Explainability (why a prediction was made)
+- ⚙️ What-If Simulator (test production changes)
+- 🎯 Recommender Engine (Top 3 actions)
 
 ---
 
-## 📦 Installation
+## 📂 Dataset Setup
 
-### 1. Clone the repository
+The SCG dataset is **publicly available** on Zenodo:  
+👉 [https://doi.org/10.5281/zenodo.13652826](https://doi.org/10.5281/zenodo.13652826)
+
+**1. Download** the dataset from the link above.  
+**2. Create** a folder called `trade_data` in this repository.  
+**3. Place** these 9 CSV files inside `trade_data/`:
+
+- `NodesIndex.csv`
+- `Edges (Storage Location).csv`
+- `Edges (Plant).csv`
+- `Edges (Product Group).csv`
+- `Edges (Product Sub-Group).csv`
+- `Sales Order.csv`
+- `Production.csv`
+- `Factory Issue.csv`
+- `Delivery To distributor.csv`
+
+---
+
+## ▶️ Quick Start (Run the Dashboard)
+
 ```bash
+# 1. Clone (replace with your username)
 git clone https://github.com/YOUR_USERNAME/Supply-Chain-GNN.git
 cd Supply-Chain-GNN
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run
+python app_final.py
+
+# 4. Open browser
+http://127.0.0.1:8000
