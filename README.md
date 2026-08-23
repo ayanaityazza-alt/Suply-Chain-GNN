@@ -63,7 +63,7 @@ http://127.0.0.1:8000
 | Hybrid GNN | 0.6403 |
 | RGCN (Single) | 0.7200 |
 | **RGCN Ensemble** | **0.7364** |
-
+---
 ## 📁 Project Structure
 
 Supply-Chain-GNN/
@@ -71,7 +71,7 @@ Supply-Chain-GNN/
 ├── requirements.txt    # Dependencies
 ├── README.md           # This file
 └── trade_data/         # ⚠️ Place CSV files here (empty folder)
-
+---
 ##📝 Citation
 @article{wasi2026nexus,
   title={A Visual Analytics Framework for Supply Chain Demand Forecasting Using Multi-Relational Graph Neural Networks},
@@ -79,6 +79,6 @@ Supply-Chain-GNN/
   journal={Malaysian Journal of Computing},
   year={2026}
 }
-
+---
 ## License
 MIT License. See the LICENSE file.
