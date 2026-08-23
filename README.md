@@ -1,7 +1,3 @@
-
----
-
-```markdown
 # NEXUS Control Tower – Supply Chain GNN
 
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
@@ -59,8 +55,7 @@ pip install -r requirements.txt
 python DashBoard.py
 
 # 4. Open browser
-http://127.0.0.1:8000
-```
+http://127.0.0.1:8000 (Product G
 
 ---
 
