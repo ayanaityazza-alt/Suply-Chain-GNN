@@ -13,10 +13,10 @@ Achieves **R² = 0.7364** on the SCG dataset.
 Products in a supply chain are connected: they share warehouses, plants, and product categories. Our RGCN model captures these relationships using **4 edge types** (Storage, Plant, Group, SubGroup) and an **ensemble of 5 models**.
 
 The **NEXUS Control Tower** dashboard provides:
-- 📊 Real-time KPIs (Total Demand, Confidence, Products at Risk)
-- 🧠 Explainability (why a prediction was made)
-- ⚙️ What-If Simulator (test production changes)
-- 🎯 Recommender Engine (Top 3 actions)
+-  Real-time KPIs (Total Demand, Confidence, Products at Risk)
+-  Explainability (why a prediction was made)
+-  What-If Simulator (test production changes)
+-  Recommender Engine (Top 3 actions)
 
 ---
 
@@ -26,8 +26,7 @@ The SCG dataset is **publicly available** on Zenodo:
 👉 [https://doi.org/10.5281/zenodo.13652826](https://doi.org/10.5281/zenodo.13652826)
 
 **1. Download** the dataset from the link above.  
-**2. Create** a folder called `trade_data` in this repository.  
-**3. Place** these 9 CSV files inside `trade_data/`:
+**2. Place** these 9 CSV files inside `trade_data/`:
 
 - `NodesIndex.csv`
 - `Edges (Storage Location).csv`
@@ -56,10 +55,8 @@ python DashBoard.py
 
 # 4. Open browser
 http://127.0.0.1:8000
+---
 
-⏱️ Runtime
-First Run	Subsequent Runs
-~20-40 min (trains 5 models)	< 1 min (loads cached models)
 📊 Results
 Model	R²
 Hybrid GNN	0.6403
